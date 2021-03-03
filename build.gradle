@@ -23,6 +23,12 @@ repositories {
 
 apply plugin: 'forge'
 
+allprojects {
+	apply plugin: 'java'
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 version = "1.12.15.41-mc1.7.10-4gnamePatchAESlot"

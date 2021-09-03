@@ -9,9 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SetFakeSlotCommandHandler implements SubPacketHandler {
-
-    public Minecraft mc;
-
     @Override
     public void handle(NBTTagCompound data, EntityPlayerMP player) {
         ItemStack stack = ItemStack.loadItemStackFromNBT(data.getCompoundTag("item"));
@@ -21,9 +18,15 @@ public class SetFakeSlotCommandHandler implements SubPacketHandler {
             Slot slot = cont.getSlot(slotNum);
             if ((slot != null) && AddonAppeng.clsSlotFake.isInstance(slot) && SlotHelper.isSlotEnabled(slot)) {
 
-                if (cont.slotClick(slot.slotNumber, -1, 0, player) == null) stack.stackSize = 64;
-                if (cont.slotClick(slot.slotNumber, 1, 0, player) == null) stack.stackSize = 1;
-
+                ItemStack targetStack = slot.getStack();
+                if (null != targetStack) {
+                    if (stack.isItemEqual(targetStack)) {
+                        stack.stackSize = slot.getStack().stackSize + 1;
+                        if (stack.stackSize > 127) { // add this check if no patch this in AE encoder
+                            stack.stackSize = 127;
+                        }
+                    }
+                }
                 slot.putStack(stack);
             }
         }
